@@ -19,6 +19,7 @@ const Overlay = Loadable(lazy(() => import('../views/uikit/overlay/page')));
 const Panel = Loadable(lazy(() => import('../views/uikit/panel/page')));
 const Table = Loadable(lazy(() => import('../views/uikit/table/page')));
 
+const FormDescuento = Loadable(lazy(() => import('../views/pages/descuento/page')));
 //public routes
 
 
@@ -48,6 +49,10 @@ const MainRoutes : RouteObject[] =  [
       {
         path: '/home',
         element: <Dashboard />,
+      },
+      {
+        path: '/descuento',
+        element: <FormDescuento />,
       },
       {
         path: '/uikit',

@@ -20,6 +20,7 @@ const Panel = Loadable(lazy(() => import('../views/uikit/panel/page')));
 const Table = Loadable(lazy(() => import('../views/uikit/table/page')));
 
 const FormDescuento = Loadable(lazy(() => import('../views/pages/descuento/page')));
+const TablaFacturas = Loadable(lazy(() => import('../views/pages/facturas/page')));
 //public routes
 
 
@@ -53,6 +54,10 @@ const MainRoutes : RouteObject[] =  [
       {
         path: '/descuento',
         element: <FormDescuento />,
+      },
+      {
+        path: '/facturas',
+        element: <TablaFacturas />,
       },
       {
         path: '/uikit',

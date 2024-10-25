@@ -46,6 +46,11 @@ const AppMenu = () => {
                     label: 'Empty',
                     icon: 'pi pi-fw pi-circle-off',
                     to: '/pages/empty'
+                },
+                {
+                    label: 'Facturas',
+                    icon: 'pi pi-fw pi-money-bill',
+                    to: '/facturas'
                 }
             ]
         },

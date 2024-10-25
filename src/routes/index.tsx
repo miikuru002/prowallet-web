@@ -5,14 +5,9 @@ import Loadable from '../layout/Loadable';
 
 //private routes
 const Dashboard = Loadable(lazy(() => import('../views/home')));
-const Button = Loadable(lazy(() => import('../views/uikit/button/page')));
-const File = Loadable(lazy(() => import('../views/uikit/file/page')));
 const FormLayout = Loadable(lazy(() => import('../views/uikit/formlayout/page')));
 const Input = Loadable(lazy(() => import('../views/uikit/input/page')));
-const InvalidState = Loadable(lazy(() => import('../views/uikit/invalidstate/page')));
 const List = Loadable(lazy(() => import('../views/uikit/list/page')));
-const Media = Loadable(lazy(() => import('../views/uikit/media/page')));
-const Menu = Loadable(lazy(() => import('../views/uikit/menu/page')));
 const Message = Loadable(lazy(() => import('../views/uikit/message/page')));
 const Misc = Loadable(lazy(() => import('../views/uikit/misc/page')));
 const Overlay = Loadable(lazy(() => import('../views/uikit/overlay/page')));
@@ -63,14 +58,6 @@ const MainRoutes : RouteObject[] =  [
         path: '/uikit',
         children: [
           {
-            path: 'button',
-            element: <Button />,
-          },
-          {
-            path: 'file',
-            element: <File />,
-          },
-          {
             path: 'formlayout',
             element: <FormLayout />,
           },
@@ -79,20 +66,8 @@ const MainRoutes : RouteObject[] =  [
             element: <Input />,
           },
           {
-            path: 'invalidstate',
-            element: <InvalidState />,
-          },
-          {
             path: 'list',
             element: <List />,
-          },
-          {
-            path: 'media',
-            element: <Media />,
-          },
-          {
-            path: 'menu',
-            element: <Menu />,
           },
           {
             path: 'message',
@@ -113,10 +88,6 @@ const MainRoutes : RouteObject[] =  [
           {
             path: 'table',
             element: <Table />,
-          },
-          {
-            path: '*',
-            element: <ErrorPage />,
           },
         ],
       },

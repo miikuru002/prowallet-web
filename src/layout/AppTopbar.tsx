@@ -18,7 +18,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((_props, ref) => {
     }));
 
     const toggleDarkMode = () => {
-        const theme = layoutConfig.theme === 'lara-light-teal' ? 'lara-dark-teal' : 'lara-light-teal';
+        const theme = layoutConfig.theme === 'lara-light-blue' ? 'lara-dark-blue' : 'lara-light-blue';
         const colorScheme = layoutConfig.colorScheme === 'light' ? 'dark' : 'light';
 
         console.log('current theme', layoutConfig.theme);
@@ -34,7 +34,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((_props, ref) => {
         <div className="layout-topbar">
             <a href="/" className="layout-topbar-logo">
                 <img src={`/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} alt="logo" />
-                <span>SAKAI</span>
+                <span>ProWallet</span>
             </a>
 
             <button ref={menubuttonRef} type="button" className="p-link layout-menu-button layout-topbar-button" onClick={onMenuToggle}>

@@ -52,7 +52,6 @@ const AppMenu = () => {
 			],
 		},
 	];
-
 	return (
 		<MenuProvider>
 			<ul className="layout-menu">

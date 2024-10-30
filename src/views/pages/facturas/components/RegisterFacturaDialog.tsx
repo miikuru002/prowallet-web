@@ -36,7 +36,7 @@ const RegisterFacturaDialog: React.FC<IProps> = (props) => {
 	//queries
 	const clientesQuery = useQuery({
 		queryKey: ["clientes"],
-		queryFn: ClientesService.listarClientes,
+		queryFn: () => ClientesService.listarClientes(),
 	});
 
 	const formik = useFormik<IRegistrarFacturaForm>({

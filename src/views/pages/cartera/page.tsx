@@ -23,6 +23,11 @@ const Cartera = () => {
     const [sortField, setSortField] = useState<string>('');
     const [displayBasic, setDisplayBasic] = useState(false);
     const [displayAddCarteraDialog, setDisplayAddCarteraDialog] = useState(false);
+    const [carteraOptions, setCarteraOptions] = useState<{label: string, value: number}[]>([]);
+    const [selectedCartera, setSelectedCartera] = useState<number | null>(null);
+    const [razonSocial, setRazonSocial] = useState('');
+    const [ruc, setRuc] = useState('');
+    const [direccion, setDireccion] = useState('');
 
     const sortOptions = [
         { label: 'Nombre A-Z', value: 'nombre' },
@@ -35,10 +40,59 @@ const Cartera = () => {
             .then(data => {
                 if (data.message === 'OK') {
                     setDataViewValue(data.result);
+                    const options = data.result.map((item: CarteraItem) => ({
+                        label: item.nombre,
+                        value: item.id
+                    }));
+                    setCarteraOptions(options);
                 }
             });
         setGlobalFilterValue('');
     }, []);
+
+    const handleRegisterClient = () => {
+        if (!selectedCartera) {
+            console.error('Por favor, selecciona una cartera.');
+            return;
+        }
+
+        const requestData = {
+            razonSocial,
+            ruc,
+            direccion
+        };
+
+        fetch(`https://prowallet.onrender.com/api/cliente/registrar/${selectedCartera}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de la API');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Registro exitoso:', data);
+                setDisplayBasic(false);
+                setRazonSocial('');
+                setRuc('');
+                setDireccion('');
+                setSelectedCartera(null);
+                setDisplayBasic(false);
+            })
+            .catch(error => {
+                console.error('Error al registrar cliente:', error);
+            });
+    };
+
+    const basicDialogFooter = (
+        <Button label="Registrar" icon="pi pi-check" onClick={handleRegisterClient} />
+    );
+
 
     const onFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -81,9 +135,15 @@ const Cartera = () => {
         );
     };
 
-    const basicDialogFooter = (
-        <Button label="OK" icon="pi pi-check" onClick={() => setDisplayBasic(false)} />
-    );
+    // const basicDialogFooter = (
+    //     <Button label="Registrar" icon="pi pi-check" onClick={() => {
+    //         console.log("Razón social:", razonSocial);
+    //         console.log("RUC:", ruc);
+    //         console.log("Dirección:", direccion);
+    //         console.log("ID de Cartera seleccionada:", selectedCartera);
+    //         setDisplayBasic(false);
+    //     }} />
+    // );
 
     const carteraDialogFooter = (
         <Button label="OK" icon="pi pi-check" onClick={() => setDisplayAddCarteraDialog(false)} />
@@ -129,28 +189,39 @@ const Cartera = () => {
                 <div className="card p-fluid">
                     <div className="field">
                         <label htmlFor="name1">Razón social</label>
-                        <InputText id="name1" type="text"/>
+                        <InputText id="name1" type="text" value={razonSocial} onChange={(e) => setRazonSocial(e.target.value)} />
                     </div>
                     <div className="field">
                         <label htmlFor="email1">RUC</label>
-                        <InputText id="email1" type="text"/>
+                        <InputText id="email1" type="text" value={ruc} onChange={(e) => setRuc(e.target.value)} />
                     </div>
                     <div className="field">
                         <label htmlFor="age1">Dirección</label>
-                        <InputText id="age1" type="text"/>
+                        <InputText id="age1" type="text" value={direccion} onChange={(e) => setDireccion(e.target.value)} />
+                    </div>
+                    <div className="field">
+                        <label htmlFor="carteraSelect">Seleccionar Cartera</label>
+                        <Dropdown
+                            id="carteraSelect"
+                            value={selectedCartera}
+                            options={carteraOptions}
+                            onChange={(e) => setSelectedCartera(e.value)}
+                            placeholder="Seleccione una cartera"
+                        />
                     </div>
                 </div>
             </Dialog>
 
-            <Dialog header="Agregar Cartera" visible={displayAddCarteraDialog} style={{width: '30vw'}} modal footer={carteraDialogFooter} onHide={() => setDisplayAddCarteraDialog(false)}>
+            <Dialog header="Agregar Cartera" visible={displayAddCarteraDialog} style={{ width: '30vw' }} modal
+                    footer={carteraDialogFooter} onHide={() => setDisplayAddCarteraDialog(false)}>
                 <div className="card p-fluid">
                     <div className="field">
                         <label htmlFor="carteraName">Nombre</label>
-                        <InputText id="carteraName" type="text"/>
+                        <InputText id="carteraName" type="text" />
                     </div>
                     <div className="field">
                         <label htmlFor="carteraDescription">Descripción</label>
-                        <InputText id="carteraDescription" type="text"/>
+                        <InputText id="carteraDescription" type="text" />
                     </div>
                     <div className="flex justify-center mt-3">
                         <Button className="btn btn-primary w-full">Agregar</Button>

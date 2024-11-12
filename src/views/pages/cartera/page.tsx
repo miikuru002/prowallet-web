@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { Button } from 'primereact/button';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
+import { Toast } from 'primereact/toast';
+
 
 interface CarteraItem {
     id: number;
@@ -28,6 +30,20 @@ const Cartera = () => {
     const [razonSocial, setRazonSocial] = useState('');
     const [ruc, setRuc] = useState('');
     const [direccion, setDireccion] = useState('');
+    const [carteraName, setCarteraName] = useState('');
+    const [carteraDescription, setCarteraDescription] = useState('');
+    const toast = useRef<Toast>(null);
+
+
+    const showWarn = (message: string) => {
+        toast.current?.show({
+            severity: 'warn',
+            summary: 'Warn Message',
+            detail: message,
+            life: 3000
+        });
+    };
+
 
     const sortOptions = [
         { label: 'Nombre A-Z', value: 'nombre' },
@@ -51,10 +67,27 @@ const Cartera = () => {
     }, []);
 
     const handleRegisterClient = () => {
+        if(!selectedCartera || !razonSocial || !ruc || !direccion) {
+            showWarn('Por favor, completa todos los campos.');
+            return;
+
+        }
+
         if (!selectedCartera) {
-            console.error('Por favor, selecciona una cartera.');
+            showWarn('Por favor, selecciona una cartera.');
             return;
         }
+        if (!ruc) {
+            showWarn('El campo RUC no puede estar vacío');
+            return;
+        }
+
+        if (ruc.length != 11) {
+            showWarn('El RUC debe tener 11 dígitos');
+            return;
+        }
+
+
 
         const requestData = {
             razonSocial,
@@ -86,6 +119,42 @@ const Cartera = () => {
             })
             .catch(error => {
                 console.error('Error al registrar cliente:', error);
+            });
+    };
+
+    const handleAddCartera = () => {
+        if (!carteraName || !carteraDescription) {
+            console.error('Por favor, completa el nombre y la descripción de la cartera.');
+            return;
+        }
+
+        const requestData = {
+            nombre: carteraName,
+            descripcion: carteraDescription
+        };
+
+        fetch('https://prowallet.onrender.com/api/cartera/crear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Error al crear la cartera: ' + response.statusText);
+                }
+            })
+            .then(data => {
+                console.log('Cartera creada exitosamente:', data);
+                setDisplayAddCarteraDialog(false);
+                setCarteraName('');
+                setCarteraDescription('');
+            })
+            .catch(error => {
+                console.error(error);
             });
     };
 
@@ -135,22 +204,13 @@ const Cartera = () => {
         );
     };
 
-    // const basicDialogFooter = (
-    //     <Button label="Registrar" icon="pi pi-check" onClick={() => {
-    //         console.log("Razón social:", razonSocial);
-    //         console.log("RUC:", ruc);
-    //         console.log("Dirección:", direccion);
-    //         console.log("ID de Cartera seleccionada:", selectedCartera);
-    //         setDisplayBasic(false);
-    //     }} />
-    // );
-
     const carteraDialogFooter = (
-        <Button label="OK" icon="pi pi-check" onClick={() => setDisplayAddCarteraDialog(false)} />
+        <Button label="Agregar nueva cartera" icon="pi pi-check" onClick={handleAddCartera}/>
     );
 
     return (
         <div className="grid">
+            <Toast ref={toast} />
             <div className="col-12">
                 <div className="card">
                     <div className="card-header flex justify-content-between align-items-center mb-3">
@@ -217,14 +277,11 @@ const Cartera = () => {
                 <div className="card p-fluid">
                     <div className="field">
                         <label htmlFor="carteraName">Nombre</label>
-                        <InputText id="carteraName" type="text" />
+                        <InputText id="carteraName" type="text" value={carteraName} onChange={(e) => setCarteraName(e.target.value)} />
                     </div>
                     <div className="field">
                         <label htmlFor="carteraDescription">Descripción</label>
-                        <InputText id="carteraDescription" type="text" />
-                    </div>
-                    <div className="flex justify-center mt-3">
-                        <Button className="btn btn-primary w-full">Agregar</Button>
+                        <InputText id="carteraDescription" type="text" value={carteraDescription} onChange={(e)=>setCarteraDescription(e.target.value)}/>
                     </div>
                 </div>
             </Dialog>

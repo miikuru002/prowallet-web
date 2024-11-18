@@ -191,17 +191,34 @@ const Cartera = () => {
         }
     };
 
-    const itemTemplate = (data: CarteraItem) => {
-        return (
-            <div className="col-12 lg:col-4">
-                <div className="card m-3 border-1 surface-border">
-                    <div className="flex flex-column align-items-center text-center mb-3">
-                        <div className="text-2xl font-bold">{data.nombre}</div>
-                        <div className="mb-3">{data.descripcion}</div>
+    const itemTemplate = (data: CarteraItem, layout: 'grid' | 'list' | (string & Record<string, unknown>)) => {
+        if (!data) {
+            return;
+        }
+
+        if (layout === 'list') {
+            return (
+                <div className="col-12">
+                    <div className="flex flex-column md:flex-row align-items-center p-3 w-full">
+                        <div className="flex-1 flex flex-column text-center md:text-left">
+                            <div className="font-bold text-2xl">{data.nombre}</div>
+                            <div className="mb-2">{data.descripcion}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        );
+            );
+        } else if (layout === 'grid') {
+            return (
+                <div className="col-12 lg:col-4">
+                    <div className="card m-3 border-1 surface-border">
+                        <div className="flex flex-column align-items-center text-center mb-3">
+                            <div className="text-2xl font-bold">{data.nombre}</div>
+                            <div className="mb-3">{data.descripcion}</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
     };
 
     const carteraDialogFooter = (

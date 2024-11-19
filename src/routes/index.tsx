@@ -18,6 +18,9 @@ const Table = Loadable(lazy(() => import('../views/uikit/table/page')));
 
 const FormDescuento = Loadable(lazy(() => import('../views/pages/descuento/page')));
 const TablaFacturas = Loadable(lazy(() => import('../views/pages/facturas/page')));
+const Crud = Loadable(lazy(() => import('../views/pages/crud/page')));
+const EmptyPage = Loadable(lazy(() => import('../views/pages/empty/page')));
+
 //public routes
 
 
@@ -101,10 +104,14 @@ const MainRoutes : RouteObject[] =  [
         path: '/pages',
         children: [
           {
+            path: 'crud',
+            element: <Crud />,
+          },
+          {
             path: 'empty',
             element: <EmptyPage />,
           },
-        ],
+        ]
       }
     ],
   },

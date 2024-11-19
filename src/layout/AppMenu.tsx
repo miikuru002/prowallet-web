@@ -11,7 +11,7 @@ const AppMenu = () => {
 		{
 			label: "Principal",
 			items: [
-        { label: "Cartera de clientes", icon: "pi pi-fw pi-users", to: "/clientes" },
+        { label: "Cartera de clientes", icon: "pi pi-folder-open", to: "/cartera" },
         { label: "Facturas", icon: "pi pi-fw pi-file", to: "/facturas" },
         { label: "Reportes", icon: "pi pi-fw pi-chart-bar", to: "/reportes" },
       ],

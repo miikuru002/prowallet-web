@@ -2,6 +2,8 @@ import { lazy } from 'react';
 import { Navigate, type RouteObject } from 'react-router-dom';
 import AppLayout from '../layout/AppLayout';
 import Loadable from '../layout/Loadable';
+import Cartera from "../views/pages/cartera/page.tsx";
+import EmptyPage from '../views/pages/empty/page.tsx';
 
 //private routes
 const Dashboard = Loadable(lazy(() => import('../views/home')));
@@ -56,6 +58,10 @@ const MainRoutes : RouteObject[] =  [
       {
         path: '/facturas',
         element: <TablaFacturas />,
+      },
+      {
+        path: '/cartera',
+        element: <Cartera/>,
       },
       {
         path: '/uikit',

@@ -1,11 +1,13 @@
 import React, {useState, useEffect, useRef} from 'react';
-import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
+import { DataView } from 'primereact/dataview';
 import { Button } from 'primereact/button';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Dialog } from 'primereact/dialog';
 import { Toast } from 'primereact/toast';
-
+import { OverlayPanel } from 'primereact/overlaypanel';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 
 interface CarteraItem {
     id: number;
@@ -19,7 +21,6 @@ const Cartera = () => {
     const [dataViewValue, setDataViewValue] = useState<CarteraItem[]>([]);
     const [globalFilterValue, setGlobalFilterValue] = useState('');
     const [filteredValue, setFilteredValue] = useState<CarteraItem[] | null>(null);
-    const [layout, setLayout] = useState<'grid' | 'list'>('grid');
     const [sortKey, setSortKey] = useState<string | null>(null);
     const [sortOrder, setSortOrder] = useState<0 | 1 | -1 | null>(null);
     const [sortField, setSortField] = useState<string>('');
@@ -32,8 +33,9 @@ const Cartera = () => {
     const [direccion, setDireccion] = useState('');
     const [carteraName, setCarteraName] = useState('');
     const [carteraDescription, setCarteraDescription] = useState('');
+    const [clientes, setClientes] = useState([]);
     const toast = useRef<Toast>(null);
-
+    const op = useRef<OverlayPanel>(null);
 
     const showWarn = (message: string) => {
         toast.current?.show({
@@ -70,7 +72,6 @@ const Cartera = () => {
         if(!selectedCartera || !razonSocial || !ruc || !direccion) {
             showWarn('Por favor, completa todos los campos.');
             return;
-
         }
 
         if (!selectedCartera) {
@@ -191,34 +192,26 @@ const Cartera = () => {
         }
     };
 
-    const itemTemplate = (data: CarteraItem, layout: 'grid' | 'list' | (string & Record<string, unknown>)) => {
-        if (!data) {
-            return;
-        }
-
-        if (layout === 'list') {
-            return (
-                <div className="col-12">
-                    <div className="flex flex-column md:flex-row align-items-center p-3 w-full">
-                        <div className="flex-1 flex flex-column text-center md:text-left">
-                            <div className="font-bold text-2xl">{data.nombre}</div>
-                            <div className="mb-2">{data.descripcion}</div>
-                        </div>
+    const itemTemplate = (data: CarteraItem) => {
+        return (
+            <div className="col-12">
+                <div className="flex flex-column md:flex-row align-items-center p-3 w-full">
+                    <div className="flex-1 flex flex-column text-center md:text-left">
+                        <div className="font-bold text-2xl">{data.nombre}</div>
+                        <div className="mt-2">{data.descripcion}</div>
+                    </div>
+                    <div className="flex flex-row md:flex-column justify-content-between w-full md:w-auto align-items-center md:align-items-end mt-5 md:mt-0">
+                        <Button icon="pi pi-users" label="Ver clientes" size="small" className="mb-2" outlined onClick={(e) => op.current?.toggle(e)} />
+                        <OverlayPanel ref={op} closeOnEscape>
+                            <DataTable value={clientes} paginator rows={5}>
+                                <Column field="razonSocial" header="Razón Social" />
+                                <Column field="ruc" header="R.U.C." />
+                            </DataTable>
+                        </OverlayPanel>
                     </div>
                 </div>
-            );
-        } else if (layout === 'grid') {
-            return (
-                <div className="col-12 lg:col-4">
-                    <div className="card m-3 border-1 surface-border">
-                        <div className="flex flex-column align-items-center text-center mb-3">
-                            <div className="text-2xl font-bold">{data.nombre}</div>
-                            <div className="mb-3">{data.descripcion}</div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
+            </div>
+        );
     };
 
     const carteraDialogFooter = (
@@ -239,23 +232,19 @@ const Cartera = () => {
                     </div>
                     <DataView
                         value={filteredValue || dataViewValue}
-                        layout={layout}
                         paginator
                         rows={9}
                         sortOrder={sortOrder}
                         sortField={sortField}
                         itemTemplate={itemTemplate}
+                        emptyMessage='No se encontraron carteras'
                         header={
                             <div className="flex flex-column md:flex-row md:justify-content-between gap-2">
                                 <Dropdown value={sortKey} options={sortOptions} optionLabel="label" placeholder="Sort By Name" onChange={onSortChange} />
                                 <span className="p-input-icon-left">
                                     <i className="pi pi-search" />
-                                    <InputText value={globalFilterValue} onChange={onFilter} placeholder="Search by Name" />
+                                    <InputText value={globalFilterValue} onChange={onFilter} placeholder="Buscar por nombre" />
                                 </span>
-                                <DataViewLayoutOptions
-                                    layout={layout}
-                                    onChange={(e) => setLayout(e.value as 'grid' | 'list')}
-                                />
                             </div>
                         }
                     />

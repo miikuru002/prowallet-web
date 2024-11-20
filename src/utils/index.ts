@@ -2,16 +2,27 @@ import { DateTime } from "luxon";
 import { EEstadoFactura } from "../types/enums";
 import { IFactura } from "../types/response";
 
-export const getFacturaStatusColor = (status: EEstadoFactura) => {
+export const getFacturaStatusData = (status?: EEstadoFactura) => {
   switch (status) {
     case EEstadoFactura.PENDIENTE:
-      return "warning";
+      return {
+        color: "warning",
+        icon: "pi pi-clock",
+      };
     case EEstadoFactura.DESCONTADA:
-      return "info";
+      return {
+        color: "info",
+        icon: "pi pi-dollar",
+      }
     case EEstadoFactura.PAGADA:
-      return "success";
+      return {
+        color: "success",
+        icon: "pi pi-check",
+      }
     default:
-      return "secondary";
+      return {
+        color: "secondary",
+      }
   }
 };
 
@@ -58,7 +69,7 @@ export const getFacturaTimeline = (factura?: IFactura) => {
     case EEstadoFactura.DESCONTADA:
       timeline.push({
         status: "Factura descontada",
-        icon: "pi pi-money-bill",
+        icon: "pi pi-dollar",
       });
       break;
     case EEstadoFactura.PAGADA:

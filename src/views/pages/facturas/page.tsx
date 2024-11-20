@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from "react";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Button } from "primereact/button";
-import { Badge } from "primereact/badge";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
@@ -17,7 +17,8 @@ import { InputIcon } from "primereact/inputicon";
 import RegisterFacturaDialog from "./components/RegisterFacturaDialog";
 import FacturaDetails from "./components/FacturaDetails";
 import { ICliente, IFactura } from "../../../types/response";
-import { getFacturaStatusColor } from "../../../utils";
+import { getFacturaStatusData } from "../../../utils";
+import { Tag } from "primereact/tag";
 
 const TablaFacturas = () => {
   const [isRegistrarFacturaVisible, setIsRegistrarFacturaVisible] =
@@ -144,6 +145,7 @@ const TablaFacturas = () => {
             paginator
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
+            removableSort
             className="datatable-responsive"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} facturas"
@@ -155,12 +157,13 @@ const TablaFacturas = () => {
             }
           >
             <Column field="id" header="Id" alignFrozen="left" />
-            <Column field="numero" header="Número" />
-            <Column field="fechaEmision" header="Fecha de Emisión" />
-            <Column field="fechaVencimiento" header="Fecha de Vencimiento" />
+            <Column field="numero" header="Número" sortable />
+            <Column field="fechaEmision" header="Fecha de Emisión" sortable />
+            <Column field="fechaVencimiento" header="Fecha de Vencimiento" sortable />
             <Column
               field="valorNominal"
               header="Valor Nominal"
+              sortable
               body={(rowData: IFactura) => {
                 const country = rowData.moneda == "PEN" ? "es-PE" : "en-US";
                 return (
@@ -176,7 +179,15 @@ const TablaFacturas = () => {
             <Column
               field="estado"
               header="Estado"
-              body={(rowData: IFactura) => <Badge value={rowData.estado} severity={getFacturaStatusColor(rowData.estado)} />}
+              sortable
+              body={(rowData: IFactura) => (
+                <Tag 
+                  value={rowData.estado}
+									//@ts-ignore idk why this is not working
+                  severity={getFacturaStatusData(rowData.estado).color} 
+                  icon={getFacturaStatusData(rowData.estado).icon}
+                />
+              )}
             />
             <Column
               header="Acciones"

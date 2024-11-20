@@ -4,10 +4,10 @@ import { IFactura } from "../../../../types/response";
 import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
 import { Timeline } from "primereact/timeline";
-import { Badge } from "primereact/badge";
-import { getFacturaStatusColor, getFacturaTimeline } from "../../../../utils";
+import { getFacturaStatusData, getFacturaTimeline } from "../../../../utils";
 import DescontarFacturaDialog from "./DescontarFacturaDialog";
 import { EEstadoFactura } from "../../../../types/enums";
+import { Tag } from "primereact/tag";
 
 interface IProps {
   isVisibleRight: boolean;
@@ -70,9 +70,11 @@ const FacturaDetails: React.FC<IProps> = ({
           </div>
           <div className="flex justify-content-between mb-3">
             <span className="font-bold">Estado:</span>
-            <Badge
+            <Tag
               value={factura?.estado}
-              severity={factura?.estado ? getFacturaStatusColor(factura.estado) : "secondary"}
+              //@ts-expect-error idk why this is not working
+              severity={getFacturaStatusData(factura?.estado).color}
+              icon={getFacturaStatusData(factura?.estado).icon}
             />
           </div>
           <Divider />
@@ -99,7 +101,7 @@ const FacturaDetails: React.FC<IProps> = ({
                 ? "Descontar"
                 : "Descontado"
             }
-            icon="pi pi-money-bill"
+            icon="pi pi-dollar"
             disabled={factura?.estado !== EEstadoFactura.PENDIENTE}
             onClick={() => setDialogVisible(true)}
           />

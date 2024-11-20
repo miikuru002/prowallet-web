@@ -120,7 +120,7 @@ const TablaFacturas = () => {
           <DataTable
             ref={dt}
             value={!selectedCliente ? [] : facturasQuery.data?.result}
-            loading={facturasQuery.isRefetching}
+            loading={facturasQuery.isRefetching || facturasQuery.isLoading}
             dataKey="id"
             header={
               <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -178,19 +178,11 @@ const TablaFacturas = () => {
               header="Estado"
               body={(rowData: IFactura) => <Badge value={rowData.estado} severity={getFacturaStatusColor(rowData.estado)} />}
             />
-            {/* TODO */}
             <Column
               header="Acciones"
               body={(rowData: IFactura) => {
                 return (
                   <>
-                    <Button
-                      icon="pi pi-pencil"
-                      rounded
-                      severity="info"
-                      className="mr-2"
-                      outlined
-                    />
                     <Button
                       icon="pi pi-eye"
                       rounded
@@ -203,7 +195,6 @@ const TablaFacturas = () => {
                   </>
                 );
               }}
-              headerStyle={{ minWidth: "10rem" }}
             />
           </DataTable>
 

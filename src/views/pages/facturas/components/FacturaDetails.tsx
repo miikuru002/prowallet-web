@@ -5,7 +5,7 @@ import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
 import { Timeline } from "primereact/timeline";
 import { Badge } from "primereact/badge";
-import { getFacturaStatusColor } from "../../../../utils";
+import { getFacturaStatusColor, getFacturaTimeline } from "../../../../utils";
 import DescontarFacturaDialog from "./DescontarFacturaDialog";
 import { EEstadoFactura } from "../../../../types/enums";
 
@@ -21,20 +21,6 @@ const FacturaDetails: React.FC<IProps> = ({
   factura,
 }) => {
   const [dialogVisible, setDialogVisible] = useState(false);
-
-	//TODO EVENTS
-  const events = [
-    {
-      status: "Emisión",
-      date: factura?.fechaEmision,
-      value: factura?.valorNominal,
-    },
-    {
-      status: "Vencimiento",
-      date: factura?.fechaVencimiento,
-      value: factura?.valorNominal,
-    },
-  ];
 
   return (
     <>
@@ -92,10 +78,15 @@ const FacturaDetails: React.FC<IProps> = ({
           <Divider />
           <div className="card" style={{ border: "none" }}>
             <Timeline
-              value={events}
+              value={getFacturaTimeline(factura as IFactura)}
               content={(item) => item.status}
               opposite={(item) => (
                 <small className="text-color-secondary">{item.date}</small>
+              )}
+              marker={(item) => (
+                <span className="flex w-2rem h-2rem align-items-center justify-content-center border-circle z-1 text-white shadow-1" style={{ backgroundColor: "var(--primary-color)" }}>
+                  <i className={item.icon}></i>
+                </span>
               )}
             />
           </div>

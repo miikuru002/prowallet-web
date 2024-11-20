@@ -142,7 +142,6 @@ const RegisterFacturaDialog: React.FC<IProps> = (props) => {
 						<Button
 							label={formik.isSubmitting ? "Registrando..." : "Registrar"}
 							icon={formik.isSubmitting ? "pi pi-spin pi-spinner" : "pi pi-check"}
-							text
 							type="button"
 							disabled={formik.isSubmitting}
 							onClick={() => formik.handleSubmit()}

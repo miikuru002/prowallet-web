@@ -47,6 +47,19 @@ const TablaFacturas = () => {
     dt.current?.exportCSV();
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "PENDIENTE":
+        return "warning";
+      case "DESCONTADA":
+        return "info";
+      case "PAGADA":
+        return "success";
+      default:
+        return "secondary";
+    }
+  }
+
   useEffect(() => {
     if (selectedCliente) {
       facturasQuery.refetch();
@@ -163,7 +176,7 @@ const TablaFacturas = () => {
             <Column
               field="estado"
               header="Estado"
-              body={(rowData: IFactura) => <Badge value={rowData.estado} />}
+              body={(rowData: IFactura) => <Badge value={rowData.estado} severity={getStatusColor(rowData.estado)} />}
             />
             {/* TODO */}
             <Column
@@ -174,13 +187,13 @@ const TablaFacturas = () => {
                     <Button
                       icon="pi pi-pencil"
                       rounded
-                      severity="success"
+                      severity="info"
                       className="mr-2"
+                      outlined
                     />
                     <Button
                       icon="pi pi-eye"
                       rounded
-                      severity="success"
                       className="mr-2"
                       onClick={() => {
                         setSelectedFactura(rowData);

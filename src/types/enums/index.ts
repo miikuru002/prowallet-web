@@ -11,11 +11,11 @@ export enum EEstadoFactura {
 }
 
 export enum EPeriodo {
-  MENSUAL = 30,
-  BIMESTRAL = 60,
-  TRIMESTRAL = 90,
-  SEMESTRAL = 180,
-  ANUAL = 360
+  MENSUAL = 'MENSUAL',
+  BIMESTRAL = 'BIMESTRAL',
+  TRIMESTRAL = 'TRIMESTRAL',
+  SEMESTRAL = 'SEMESTRAL',
+  ANUAL = 'ANUAL'
 }
 
 export enum ETipoTasa {

@@ -46,8 +46,13 @@ export interface IDescontarFacturaDto {
   tasa: number;
   tipoTasa: ETipoTasa;
   periodoTasa: EPeriodo;
-  periodoCapitalizacion: EPeriodo;
-  facturaId: number;
+  periodoCapitalizacion: EPeriodo | null;
+}
+export interface IDescontarFacturaForm extends IDescontarFacturaDto {
+  fechaDescuento: Date | null;
+  tipoTasa: ETipoTasa | null;
+  periodoTasa: EPeriodo | null;
+  periodoCapitalizacion: EPeriodo | null;
 }
 export interface IDescontarFacturaRequest {
   data: IDescontarFacturaDto;

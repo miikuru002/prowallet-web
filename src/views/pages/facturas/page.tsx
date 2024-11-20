@@ -17,6 +17,7 @@ import { InputIcon } from "primereact/inputicon";
 import RegisterFacturaDialog from "./components/RegisterFacturaDialog";
 import FacturaDetails from "./components/FacturaDetails";
 import { ICliente, IFactura } from "../../../types/response";
+import { getFacturaStatusColor } from "../../../utils";
 
 const TablaFacturas = () => {
   const [isRegistrarFacturaVisible, setIsRegistrarFacturaVisible] =
@@ -47,24 +48,23 @@ const TablaFacturas = () => {
     dt.current?.exportCSV();
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "PENDIENTE":
-        return "warning";
-      case "DESCONTADA":
-        return "info";
-      case "PAGADA":
-        return "success";
-      default:
-        return "secondary";
-    }
-  }
-
   useEffect(() => {
     if (selectedCliente) {
       facturasQuery.refetch();
     }
+
   }, [selectedCliente]);
+
+  //para refescar la factura seleccionada que se pasa al componente FacturaDetails
+  useEffect(() => {
+    if (selectedFactura) {
+      setSelectedFactura(
+        facturasQuery.data?.result.find(
+          (factura) => factura.id === selectedFactura.id
+        ) ?? null
+      );
+    }
+  }, [facturasQuery.data]);
 
   return (
     <div className="grid">
@@ -176,7 +176,7 @@ const TablaFacturas = () => {
             <Column
               field="estado"
               header="Estado"
-              body={(rowData: IFactura) => <Badge value={rowData.estado} severity={getStatusColor(rowData.estado)} />}
+              body={(rowData: IFactura) => <Badge value={rowData.estado} severity={getFacturaStatusColor(rowData.estado)} />}
             />
             {/* TODO */}
             <Column

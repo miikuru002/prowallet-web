@@ -47,7 +47,7 @@ const RegisterClienteDialog: React.FC<IProps> = (props) => {
 			ruc: Yup.string()
 				.required("El RUC es requerido")
 				.matches(/^[0-9]+$/, "El RUC solo debe contener dígitos")
-				.min(10, "El RUC debe tener 10 dígitos")
+				.min(11, "El RUC debe tener 11 dígitos")
 				.max(11, "El RUC no debe exceder los 11 dígitos"),
 			direccion: Yup.string().required("La dirección es requerida"),
 			carteraId: Yup.number().required("La cartera es requerida"),

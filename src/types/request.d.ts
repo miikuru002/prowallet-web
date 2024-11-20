@@ -1,16 +1,13 @@
 import { EMoneda, EPeriodo, ETipoTasa } from "./enums";
 
 //CLIENTES
-export interface IRegistrarClienteForm {
-  razonSocial: string;
-  ruc: string | null;
-  direccion: string | null;
-  carteraId: number | null;
-}
 export interface IRegistrarClienteDto {
   razonSocial: string;
   ruc: string;
   direccion: string;
+}
+export interface IRegistrarClienteForm extends IRegistrarClienteDto {
+  carteraId: number | null;
 }
 export interface IRegistrarClienteRequest {
   data: IRegistrarClienteDto;

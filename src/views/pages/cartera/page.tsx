@@ -125,13 +125,13 @@ const Cartera = () => {
 						start={
 							<div className="my-2">
 								<Button
-									label="Agregar cliente"
+									label="Registrar Cliente"
 									icon="pi pi-plus"
 									className=" mr-2"
 									onClick={() => setRegistrarClienteVisible(true)}
 								/>
 								<Button
-									label="Agregar cartera"
+									label="Crear Cartera"
 									icon="pi pi-folder-open"
 									severity="secondary"
 									onClick={() => setCreateCarteraDialogVisible(true)}

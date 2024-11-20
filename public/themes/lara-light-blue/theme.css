@@ -4709,7 +4709,7 @@
     background-color: #3b82f6;
   }
   .p-stepper.p-stepper-vertical .p-stepper-panel:last-of-type .p-stepper-content {
-    padding-left: 3rem;
+    padding-left: 1rem;
   }
   .p-scrollpanel .p-scrollpanel-bar {
     background: #f9fafb;

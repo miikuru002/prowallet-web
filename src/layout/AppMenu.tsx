@@ -25,13 +25,6 @@ const AppMenu = () => {
 					icon: "pi pi-fw pi-star",
 					items: [
 						{ label: "Form Layout", icon: "pi pi-fw pi-id-card", to: "/uikit/formlayout" },
-						{ label: "Input", icon: "pi pi-fw pi-check-square", to: "/uikit/input" },
-						{ label: "Table", icon: "pi pi-fw pi-table", to: "/uikit/table" },
-						{ label: "List", icon: "pi pi-fw pi-list", to: "/uikit/list" },
-						{ label: "Panel", icon: "pi pi-fw pi-tablet", to: "/uikit/panel" },
-						{ label: "Overlay", icon: "pi pi-fw pi-clone", to: "/uikit/overlay" },
-						{ label: "Message", icon: "pi pi-fw pi-comment", to: "/uikit/message" },
-						{ label: "Misc", icon: "pi pi-fw pi-circle", to: "/uikit/misc" },
 					],
 				},
         {
@@ -39,11 +32,6 @@ const AppMenu = () => {
           icon: "pi pi-fw pi-sign-in",
           to: "/auth/login",
         },
-				{
-					label: "Crud",
-					icon: "pi pi-fw pi-pencil",
-					to: "/pages/crud",
-				},
 				{
 					label: "Empty",
 					icon: "pi pi-fw pi-circle-off",

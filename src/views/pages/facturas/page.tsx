@@ -70,26 +70,29 @@ const TablaFacturas = () => {
                   className=" mr-2"
                   onClick={() => setIsRegistrarFacturaVisible(true)}
                 />
-                <Dropdown
-                  name="clienteId"
-                  optionLabel="razonSocial"
-                  placeholder={
-                    clientesQuery.isLoading
-                      ? "Cargando..."
-                      : "Seleccione un cliente"
-                  }
-                  required
-                  filter
-                  showClear
-                  showFilterClear
-                  value={selectedCliente}
-                  loading={clientesQuery.isLoading}
-                  options={clientesQuery.data?.result}
-                  onChange={(e) => {
-                    setSelectedCliente(e.value);
-                  }}
-                />
               </div>
+            }
+            center={
+              <Dropdown
+                id="clienteId"
+                name="clienteId"
+                optionLabel="razonSocial"
+                placeholder={
+                  clientesQuery.isLoading
+                    ? "Cargando..."
+                    : "Seleccione un cliente"
+                }
+                required
+                filter
+                showClear
+                showFilterClear
+                value={selectedCliente}
+                loading={clientesQuery.isLoading}
+                options={clientesQuery.data?.result}
+                onChange={(e) => {
+                  setSelectedCliente(e.value);
+                }}
+              />
             }
             end={
               <Button
@@ -198,7 +201,7 @@ const TablaFacturas = () => {
           <FacturaDetails
             isVisibleRight={isVisibleRight}
             setIsVisibleRight={setIsVisibleRight}
-			      factura={selectedFactura}
+            factura={selectedFactura}
           />
         </div>
       </div>

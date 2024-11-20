@@ -198,7 +198,7 @@ const TablaFacturas = () => {
           <FacturaDetails
             isVisibleRight={isVisibleRight}
             setIsVisibleRight={setIsVisibleRight}
-			factura={selectedFactura}
+			      factura={selectedFactura}
           />
         </div>
       </div>

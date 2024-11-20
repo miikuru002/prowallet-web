@@ -138,7 +138,7 @@ const RegisterClienteDialog: React.FC<IProps> = (props) => {
 							})}
 						/>
             {formik.touched.razonSocial && Boolean(formik.errors.razonSocial) && (
-							<small className="p-invalid">
+							<small className="p-error">
 								{formik.touched.razonSocial && formik.errors.razonSocial}
 							</small>
 						)}
@@ -158,7 +158,7 @@ const RegisterClienteDialog: React.FC<IProps> = (props) => {
               })}
 						/>
             {formik.touched.ruc && Boolean(formik.errors.ruc) && (
-							<small className="p-invalid">
+							<small className="p-error">
 								{formik.touched.ruc && formik.errors.ruc}
 							</small>
 						)}
@@ -178,7 +178,7 @@ const RegisterClienteDialog: React.FC<IProps> = (props) => {
               })}
 						/>
             {formik.touched.direccion && Boolean(formik.errors.direccion) && (
-							<small className="p-invalid">
+							<small className="p-error">
 								{formik.touched.direccion && formik.errors.direccion}
 							</small>
 						)}
@@ -205,7 +205,7 @@ const RegisterClienteDialog: React.FC<IProps> = (props) => {
               })}
 						/>
             {formik.touched.carteraId && Boolean(formik.errors.carteraId) && (
-							<small className="p-invalid">
+							<small className="p-error">
 								{formik.touched.carteraId && formik.errors.carteraId}
 							</small>
 						)}

@@ -118,7 +118,7 @@ const CreateCarteraDialog: React.FC<IProps> = (props) => {
 							})}
 						/>
             {formik.touched.nombre && Boolean(formik.errors.nombre) && (
-							<small className="p-invalid">
+							<small className="p-error">
 								{formik.touched.nombre && formik.errors.nombre}
 							</small>
 						)}
@@ -139,7 +139,7 @@ const CreateCarteraDialog: React.FC<IProps> = (props) => {
               })}
             />
             {formik.touched.descripcion && Boolean(formik.errors.descripcion) && (
-              <small className="p-invalid">
+              <small className="p-error">
                 {formik.touched.descripcion && formik.errors.descripcion}
               </small>
             )}

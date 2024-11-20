@@ -172,7 +172,7 @@ const RegisterFacturaDialog: React.FC<IProps> = (props) => {
 							})}
 						/>
 						{formik.touched.clienteId && Boolean(formik.errors.clienteId) && (
-							<small className="p-invalid">
+							<small className="p-error">
 								{formik.touched.clienteId && formik.errors.clienteId}
 							</small>
 						)}
@@ -192,7 +192,7 @@ const RegisterFacturaDialog: React.FC<IProps> = (props) => {
 							})}
 						/>
 						{formik.touched.numero && Boolean(formik.errors.numero) && (
-							<small className="p-invalid">
+							<small className="p-error">
 								{formik.touched.numero && formik.errors.numero}
 							</small>
 						)}
@@ -216,7 +216,7 @@ const RegisterFacturaDialog: React.FC<IProps> = (props) => {
 								})}
 							/>
 							{formik.touched.fechaEmision && Boolean(formik.errors.fechaEmision) && (
-								<small className="p-invalid">
+								<small className="p-error">
 									{formik.touched.fechaEmision && formik.errors.fechaEmision}
 								</small>
 							)}
@@ -238,7 +238,7 @@ const RegisterFacturaDialog: React.FC<IProps> = (props) => {
 								})}
 							/>
 							{formik.touched.fechaVencimiento && Boolean(formik.errors.fechaVencimiento) && (
-								<small className="p-invalid">
+								<small className="p-error">
 									{formik.touched.fechaVencimiento && formik.errors.fechaVencimiento}
 								</small>
 							)}
@@ -263,7 +263,7 @@ const RegisterFacturaDialog: React.FC<IProps> = (props) => {
 								})}
 							/>
 							{formik.touched.valorNominal && Boolean(formik.errors.valorNominal) && (
-								<small className="p-invalid">
+								<small className="p-error">
 									{formik.touched.valorNominal && formik.errors.valorNominal}
 								</small>
 							)}
@@ -289,7 +289,7 @@ const RegisterFacturaDialog: React.FC<IProps> = (props) => {
 								})}
 							/>
 							{formik.touched.moneda && Boolean(formik.errors.moneda) && (
-								<small className="p-invalid">
+								<small className="p-error">
 									{formik.touched.moneda && formik.errors.moneda}
 								</small>
 							)}

@@ -181,7 +181,6 @@ const DescontarFacturaDialog: React.FC<IProps> = (props) => {
                   showIcon
                   showButtonBar
                   required
-									autoFocus
                   minDate={new Date()}
                   value={formik.values.fechaDescuento}
                   onBlur={formik.handleBlur}

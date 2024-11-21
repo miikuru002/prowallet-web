@@ -8,6 +8,7 @@ import "./styles/demo/Demos.scss";
 import { useRoutes } from "react-router-dom";
 import MainRoutes from "./routes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 function App() {
 	const Routes = useRoutes(MainRoutes);
@@ -18,6 +19,7 @@ function App() {
 			<PrimeReactProvider>
 				<LayoutProvider>{Routes}</LayoutProvider>
 			</PrimeReactProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
 		</QueryClientProvider>
 	);
 }

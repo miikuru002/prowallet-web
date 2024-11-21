@@ -15,18 +15,17 @@ import { Dropdown } from "primereact/dropdown";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import RegisterFacturaDialog from "./components/RegisterFacturaDialog";
-import FacturaDetails from "./components/FacturaDetails";
 import { ICliente, IFactura } from "../../../types/response";
 import { getFacturaStatusData } from "../../../utils";
 import { Tag } from "primereact/tag";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const TablaFacturas = () => {
   const [isRegistrarFacturaVisible, setIsRegistrarFacturaVisible] =
     useState(false);
-  const [isVisibleRight, setIsVisibleRight] = useState(false);
-  const [selectedFactura, setSelectedFactura] = useState<IFactura | null>(null);
   const [selectedCliente, setSelectedCliente] = useState<ICliente | null>(null);
   const [globalFilter, setGlobalFilter] = useState("");
+  const navigate = useNavigate();
   const toast = useRef<Toast>(null);
   const dt = useRef<DataTable<any>>(null);
 
@@ -49,23 +48,16 @@ const TablaFacturas = () => {
     dt.current?.exportCSV();
   };
 
+  const handleClickOpenDetails = (facturaId: number) => {
+    navigate(`/facturas/${facturaId}`);
+  };
+
   useEffect(() => {
     if (selectedCliente) {
       facturasQuery.refetch();
     }
 
   }, [selectedCliente]);
-
-  //para refescar la factura seleccionada que se pasa al componente FacturaDetails
-  useEffect(() => {
-    if (selectedFactura) {
-      setSelectedFactura(
-        facturasQuery.data?.result.find(
-          (factura) => factura.id === selectedFactura.id
-        ) ?? null
-      );
-    }
-  }, [facturasQuery.data]);
 
   return (
     <div className="grid">
@@ -198,10 +190,7 @@ const TablaFacturas = () => {
                       icon="pi pi-eye"
                       rounded
                       className="mr-2"
-                      onClick={() => {
-                        setSelectedFactura(rowData);
-                        setIsVisibleRight(true);
-                      }}
+                      onClick={() => handleClickOpenDetails(rowData.id)}
                     />
                   </>
                 );
@@ -213,11 +202,7 @@ const TablaFacturas = () => {
             isVisible={isRegistrarFacturaVisible}
             setVisible={setIsRegistrarFacturaVisible}
           />
-          <FacturaDetails
-            isVisibleRight={isVisibleRight}
-            setIsVisibleRight={setIsVisibleRight}
-            factura={selectedFactura}
-          />
+          <Outlet />
         </div>
       </div>
     </div>

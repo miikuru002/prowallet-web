@@ -3,13 +3,17 @@ import { forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import { AppTopbarRef, LayoutConfig } from '../types';
 import { LayoutContext } from './context/layoutcontext';
 import { PrimeReactContext } from 'primereact/api';
+import { Menu } from 'primereact/menu';
+import { useAuth } from 'react-oidc-context';
 
 const AppTopbar = forwardRef<AppTopbarRef>((_props, ref) => {
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar, setLayoutConfig } = useContext(LayoutContext);
     const menubuttonRef = useRef(null);
     const topbarmenuRef = useRef(null);
     const topbarmenubuttonRef = useRef(null);
+    const menu = useRef<Menu>(null);
     const { changeTheme } = useContext(PrimeReactContext);
+    const auth = useAuth();
 
     useImperativeHandle(ref, () => ({
         menubutton: menubuttonRef.current,
@@ -29,6 +33,21 @@ const AppTopbar = forwardRef<AppTopbarRef>((_props, ref) => {
             setLayoutConfig((prevState: LayoutConfig) => ({ ...prevState, theme, colorScheme }));
         });
     };
+
+    const items = [
+      {
+        label: 'Mi Perfil',
+        icon: 'pi pi-user',
+        command: () => window.location.href = 'https://auth.hannami.xyz/realms/ProWallet/account/'
+      },
+      {
+        label: 'Cerrar Sesión',
+        icon: 'pi pi-sign-out',
+        command: () => auth.signoutRedirect(),
+      }
+    ];
+
+
 
     return (
         <div className="layout-topbar">
@@ -50,10 +69,12 @@ const AppTopbar = forwardRef<AppTopbarRef>((_props, ref) => {
                     <i className="pi pi-moon"></i>
                     <span>Dark Mode</span>
                 </button>
-                <button type="button" className="p-link layout-topbar-button">
+                <button type="button" className="p-link layout-topbar-button" onClick={(event) => menu.current?.toggle(event)}>
                     <i className="pi pi-user"></i>
                     <span>Profile</span>
                 </button>
+
+                <Menu model={items} popup ref={menu} id="popup_menu_right" popupAlignment="right" />
             </div>
         </div>
     );

@@ -102,6 +102,7 @@ const FacturaDetails: React.FC<IProps> = ({
                 : "Descontado"
             }
             icon="pi pi-dollar"
+            severity="success"
             disabled={factura?.estado !== EEstadoFactura.PENDIENTE}
             onClick={() => setDialogVisible(true)}
           />

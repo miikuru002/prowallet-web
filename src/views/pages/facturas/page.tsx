@@ -80,7 +80,6 @@ const TablaFacturas = () => {
                 <Button
                   label="Registrar Factura"
                   icon="pi pi-plus"
-                  severity="success"
                   className=" mr-2"
                   onClick={() => setIsRegistrarFacturaVisible(true)}
                 />

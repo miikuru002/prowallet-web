@@ -207,6 +207,7 @@ const RegisterFacturaDialog: React.FC<IProps> = (props) => {
 								dateFormat="yy-mm-dd"
 								showIcon
 								showButtonBar
+								locale="es"
 								required
 								maxDate={new Date()}
 								value={formik.values.fechaEmision}
@@ -230,6 +231,7 @@ const RegisterFacturaDialog: React.FC<IProps> = (props) => {
 								dateFormat="yy-mm-dd"
 								showIcon
 								showButtonBar
+								locale="es"
 								required
 								minDate={formik.values.fechaEmision || new Date()}
 								value={formik.values.fechaVencimiento}

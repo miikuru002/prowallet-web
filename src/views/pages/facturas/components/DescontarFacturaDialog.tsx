@@ -25,6 +25,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Tag } from "primereact/tag";
 import { getTipoComisionData } from "../../../../utils";
+import { Message } from "primereact/message";
 
 interface IProps {
   isVisible: boolean;
@@ -44,6 +45,14 @@ const DescontarFacturaDialog: React.FC<IProps> = (props) => {
       queryClient.invalidateQueries({ queryKey: ["facturas"] });
     },
   });
+
+  const calculatePlazoDescuento = (fechaDescuentoValue: Date | null) => {
+    if (!fechaDescuentoValue) return 0;
+    //se resta la fecha de descuento con la fecha de hoy
+    const fechaHoy = DateTime.now().startOf("day")
+    const fechaDescuento = DateTime.fromJSDate(fechaDescuentoValue);
+    return Math.floor(fechaDescuento.diff(fechaHoy, "days").days);
+  }
 
   const formik = useFormik<IDescontarFacturaForm>({
     initialValues: {
@@ -190,7 +199,7 @@ const DescontarFacturaDialog: React.FC<IProps> = (props) => {
                       formik.touched.fechaDescuento &&
                       Boolean(formik.errors.fechaDescuento),
                   })}
-                />
+                />  
                 {formik.touched.fechaDescuento &&
                   Boolean(formik.errors.fechaDescuento) && (
                     <small className="p-error">
@@ -198,6 +207,7 @@ const DescontarFacturaDialog: React.FC<IProps> = (props) => {
                         formik.errors.fechaDescuento}
                     </small>
                   )}
+                <Message className="mt-2" text={`El plazo de descuento será de ${calculatePlazoDescuento(formik.values.fechaDescuento)} día(s)`} />
               </div>
               <div className="flex py-4">
                 <Button

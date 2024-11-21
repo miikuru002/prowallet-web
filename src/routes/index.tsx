@@ -3,32 +3,29 @@ import { Navigate, type RouteObject } from 'react-router-dom';
 import AppLayout from '../layout/AppLayout';
 import Loadable from '../layout/Loadable';
 import Cartera from "../views/pages/cartera/page.tsx";
+import FacturaDetails from '../views/pages/facturas/components/FacturaDetails.tsx';
 
 //private routes
 const Dashboard = Loadable(lazy(() => import('../views/home')));
-const FormLayout = Loadable(lazy(() => import('../views/uikit/formlayout/page')));
-
-const FormDescuento = Loadable(lazy(() => import('../views/pages/descuento/page')));
 const TablaFacturas = Loadable(lazy(() => import('../views/pages/facturas/page')));
 const EmptyPage = Loadable(lazy(() => import('../views/pages/empty/page')));
 
 //public routes
-
+const LoginPage = Loadable(lazy(() => import('../views/pages/auth/login/page')));
 
 //404
 const ErrorPage = Loadable(lazy(() => import('../views/pages/notfound/page')));
 
 const MainRoutes : RouteObject[] =  [
   //*PUBLIC ROUTES
-  // {
-  //   element: <PublicRoute />,
-  //   children: [
-  //     {
-  //       path: '/login',
-  //       element: <Login />,
-  //     },
-  //   ],
-  // },
+  {
+    children: [
+      {
+        path: '/login',
+        element: <LoginPage />,
+      },
+    ],
+  },
 
   //*PRIVATE ROUTES
   {
@@ -43,23 +40,16 @@ const MainRoutes : RouteObject[] =  [
         element: <Dashboard />,
       },
       {
-        path: '/descuento',
-        element: <FormDescuento />,
-      },
-      {
-        path: '/facturas',
-        element: <TablaFacturas />,
-      },
-      {
-        path: '/cartera',
+        path: '/carteras',
         element: <Cartera/>,
       },
       {
-        path: '/uikit',
+        path: 'facturas',
+        element: <TablaFacturas />,
         children: [
           {
-            path: 'formlayout',
-            element: <FormLayout />,
+            path: ':facturaId',
+            element: <FacturaDetails />,
           },
         ],
       },

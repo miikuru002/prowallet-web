@@ -3,6 +3,8 @@ import { Navigate, type RouteObject } from 'react-router-dom';
 import AppLayout from '../layout/AppLayout';
 import Loadable from '../layout/Loadable';
 import Cartera from "../views/pages/cartera/page.tsx";
+import PrivateRoute from '../layout/PrivateRoute.tsx';
+import PublicRoute from '../layout/PublicRoute.tsx';
 
 //private routes
 const Dashboard = Loadable(lazy(() => import('../views/home')));
@@ -18,6 +20,7 @@ const ErrorPage = Loadable(lazy(() => import('../views/pages/notfound/page')));
 const MainRoutes : RouteObject[] =  [
   //*PUBLIC ROUTES
   {
+    element: <PublicRoute />,
     children: [
       {
         path: '/login',
@@ -28,7 +31,7 @@ const MainRoutes : RouteObject[] =  [
 
   //*PRIVATE ROUTES
   {
-    element: <AppLayout />,
+    element: <PrivateRoute />,
     children: [
       {
         index: true,

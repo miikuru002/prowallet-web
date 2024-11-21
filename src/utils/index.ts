@@ -33,7 +33,7 @@ export const getTipoComisionData = (tipo: string) => {
         color: "success",
         label: "Fijo",
       };
-    case "PORCENTAJE_SOBRE_VN ":
+    case "PORCENTAJE_SOBRE_VN":
       return {
         color: "info",
         label: "Porc.",

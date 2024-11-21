@@ -32,9 +32,14 @@ const FacturaDetails: React.FC<IProps> = ({
       >
         <h2>Detalles de la factura</h2>
         <div className="card">
-          <h1 style={{ fontWeight: "normal", textAlign: "center" }}>
-            {factura?.numero}
-          </h1>
+          <div className="text-center"> 
+            <h3>
+              {factura?.numero}
+            </h3>
+            <small className="text-color-secondary">
+              (Identificador: {factura?.id})
+            </small>
+          </div>
           <Divider />
           <div className="flex justify-content-between mb-3">
             <span className="font-bold">Cliente:</span>

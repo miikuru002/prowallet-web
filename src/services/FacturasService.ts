@@ -8,11 +8,6 @@ const FacturasService = {
     return res.data;
   },
 
-  getDetalleById: async (facturaId: number) => {
-    const res = await httpClient.get<IApiResponse<IFactura>>(`/factura/detalle/${facturaId}`);
-    return res.data;
-  },
-
 	registrarFactura: async (request: IRegistrarFacturaRequest) => {
 		const res = await httpClient.post<IApiResponse>(`/factura/registrar/${request.clienteId}`, request.data);
 		return res.data;

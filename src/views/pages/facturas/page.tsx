@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useState } from "react";
 import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
+import { DataTable, DataTableExpandedRows } from "primereact/datatable";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
@@ -16,9 +16,10 @@ import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import RegisterFacturaDialog from "./components/RegisterFacturaDialog";
 import { ICliente, IFactura } from "../../../types/response";
-import { getFacturaStatusData } from "../../../utils";
+import { getFacturaStatusData, getTipoComisionData } from "../../../utils";
 import { Tag } from "primereact/tag";
 import FacturaDetails from "./components/FacturaDetails";
+import { EEstadoFactura } from "../../../types/enums";
 
 const TablaFacturas = () => {
   const [isRegistrarFacturaVisible, setIsRegistrarFacturaVisible] =
@@ -27,6 +28,7 @@ const TablaFacturas = () => {
   const [selectedFactura, setSelectedFactura] = useState<IFactura | null>(null);
   const [selectedCliente, setSelectedCliente] = useState<ICliente | null>(null);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [expandedRows, setExpandedRows] = useState<DataTableExpandedRows | any[]>({});
   const toast = useRef<Toast>(null);
   const dt = useRef<DataTable<any>>(null);
 
@@ -35,7 +37,6 @@ const TablaFacturas = () => {
     queryKey: ["clientes"],
     queryFn: () => ClientesService.listarClientes(),
   });
-
   const facturasQuery = useQuery({
     queryKey: ["facturas"],
     queryFn: () => FacturasService.listarFacturas(selectedCliente?.id ?? 0),
@@ -53,7 +54,6 @@ const TablaFacturas = () => {
     if (selectedCliente) {
       facturasQuery.refetch();
     }
-
   }, [selectedCliente]);
 
   //para refescar la factura seleccionada que se pasa al componente FacturaDetails
@@ -66,6 +66,81 @@ const TablaFacturas = () => {
       );
     }
   }, [facturasQuery.data]);
+
+  //detalle descuentos
+  const rowExpansionTemplate = (rowData: IFactura) => {
+    return (
+      <div className="p-3">
+        <div className="grid">
+          <div className="col-6">
+            <div className="card">
+              <h6>Información del descuento</h6>
+              <p> 
+                <i className="pi pi-calendar mr-2"></i>
+                Fecha de descuento: <code>{rowData.descuento?.fechaDescuento}</code>
+              </p>
+              <p>
+                <i className="pi pi-percentage mr-2"></i>
+                Tasa: <code>{rowData.descuento?.tasa.toFixed(7)}% ({rowData.descuento?.tipoTasa.toLowerCase()} {rowData.descuento?.periodoTasa.toLocaleLowerCase()})</code>
+              </p>
+              <p>
+                <i className="pi pi-money-bill mr-2"></i>
+                Valor neto (sin comisiones): <code>{rowData.descuento?.valorNeto.toFixed(2)}</code>
+              </p>
+              <p>
+                <i className="pi pi-angle-double-right mr-2"></i>
+                Valor recibido (con comisiones al momento del descuento): <code>{rowData.descuento?.valorRecibido.toFixed(2)}</code>
+              </p>
+              <p>
+                <i className="pi pi-angle-double-left mr-2"></i>
+                Valor entregado (con comisiones al momento de cancelar): <code>{rowData.descuento?.valorEntregado.toFixed(2)}</code>
+              </p>
+            </div>
+          </div>
+
+          <div className="col-6">
+            <div className="card">
+              <h6>Comisiones aplicadas</h6>
+              <DataTable
+                value={rowData.descuento?.comisionesAplicadas}
+                size="small"
+                removableSort
+                showGridlines
+              >
+                <Column field="nombre" header="Nombre" sortable />
+                <Column field="momento" header="Momento" sortable />
+                <Column 
+                  field="valor" 
+                  header="Valor" 
+                  body={(data) => {
+                    switch (data.tipo) {
+                      case "PORCENTAJE_SOBRE_VN":
+                        return data.valor.toFixed(2) + "%";
+                      case "MONTO_FIJO":
+                        return data.valor.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+                      default:
+                        return data.valor;
+                    }
+                  }}
+                />
+                <Column 
+									header="Tipo" 
+									body={(data) => 
+										<Tag 
+											//@ts-ignore idk why this is not working
+											severity={getTipoComisionData(data.tipo).color} 
+											value={getTipoComisionData(data.tipo).label} 
+										/>
+									} 
+								/>
+              </DataTable>
+              {/* TODO: PONER EL TOTAL DE LAS COMISIONES */}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="grid">
@@ -121,14 +196,17 @@ const TablaFacturas = () => {
             ref={dt}
             value={!selectedCliente ? [] : facturasQuery.data?.result}
             loading={facturasQuery.isRefetching || facturasQuery.isLoading}
+            expandedRows={expandedRows}
+            onRowToggle={(e) => setExpandedRows(e.data)}
+            rowExpansionTemplate={rowExpansionTemplate}
             dataKey="id"
             header={
               <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-                <h5 className="m-0">
+                <h6 className="m-0">
                   {selectedCliente?.razonSocial
                     ? `Facturas de ${selectedCliente.razonSocial}`
                     : "Seleccione un cliente"}
-                </h5>
+                </h6>
                 <span className="block mt-2 md:mt-0 p-input-icon-left">
                   <IconField iconPosition="left">
                     <InputIcon className="pi pi-search" />
@@ -155,7 +233,12 @@ const TablaFacturas = () => {
                 : "No se encontraron facturas"
             }
           >
-            <Column field="id" header="Id" alignFrozen="left" />
+            <Column
+              header="Descuentos"
+              bodyStyle={{ textAlign: 'center', overflow: 'visible' }}
+              expander={(rowData) => rowData.estado !== EEstadoFactura.PENDIENTE}
+              style={{ width: '5rem' }}
+            />
             <Column field="numero" header="Número" sortable />
             <Column field="fechaEmision" header="Fecha de Emisión" sortable />
             <Column field="fechaVencimiento" header="Fecha de Vencimiento" sortable />
@@ -189,7 +272,8 @@ const TablaFacturas = () => {
               )}
             />
             <Column
-              header="Acciones"
+              headerStyle={{ width: '5rem', textAlign: 'center' }}
+              bodyStyle={{ textAlign: 'center', overflow: 'visible' }}
               body={(rowData: IFactura) => {
                 return (
                   <>

@@ -1,4 +1,4 @@
-import { EEstadoFactura, EMoneda } from "./enums";
+import { EEstadoFactura, EMoneda, EPeriodo, ETipoTasa } from "./enums";
 
 //API
 export interface IApiResponse<T = null> {
@@ -44,6 +44,33 @@ export interface IFactura {
   moneda: EMoneda;
   estado: EEstadoFactura;
   cliente: ICliente;
+  descuento: IDescuentoFactura | null;
+  fechaCreacion: string;
+  fechaModificacion: string;
+}
+export interface IDescuentoFactura {
+  id: number;
+  fechaDescuento: string;
+  tasa: number;
+  tipoTasa: ETipoTasa;
+  periodoTasa: EPeriodo;
+  periodoCapitalizacion: EPeriodo | null;
+  valorNeto: number;
+  valorRecibido: number;
+  valorEntregado: number;
+  fechaCreacion: string;
+  fechaModificacion: string;
+  comisionesAplicadas: IComision[];
+}
+
+//COMISIONES
+export interface IComision {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  tipo: "MONTO_FIJO" | "PORCENTAJE_SOBRE_VN";
+  momento: "DESCUENTO" | "CANCELACION";
+  valor: number;
   fechaCreacion: string;
   fechaModificacion: string;
 }

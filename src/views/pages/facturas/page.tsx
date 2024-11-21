@@ -113,6 +113,13 @@ const TablaFacturas = () => {
                 <i className="pi pi-angle-double-left mr-2"></i>
                 Valor entregado (con comisiones al momento de cancelar): <code>{rowData.descuento?.valorEntregado.toFixed(2)}</code>
               </p>
+
+              <h6>Tasa de Costo Efectiva Anual (TCEA)</h6>
+              <div className="text-center text-xl">
+                <p>
+                  <code><b>{rowData.descuento?.tcea.toFixed(7)}%</b></code>
+                </p>
+              </div>
             </div>
           </div>
 
@@ -168,7 +175,6 @@ const TablaFacturas = () => {
 									} 
 								/>
               </DataTable>
-              {/* TODO: PONER EL TOTAL DE LAS COMISIONES */}
             </div>
           </div>
         </div>

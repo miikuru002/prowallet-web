@@ -3,7 +3,6 @@ import { Navigate, type RouteObject } from 'react-router-dom';
 import AppLayout from '../layout/AppLayout';
 import Loadable from '../layout/Loadable';
 import Cartera from "../views/pages/cartera/page.tsx";
-import FacturaDetails from '../views/pages/facturas/components/FacturaDetails.tsx';
 
 //private routes
 const Dashboard = Loadable(lazy(() => import('../views/home')));
@@ -46,12 +45,6 @@ const MainRoutes : RouteObject[] =  [
       {
         path: 'facturas',
         element: <TablaFacturas />,
-        children: [
-          {
-            path: ':facturaId',
-            element: <FacturaDetails />,
-          },
-        ],
       },
       {
         path: '/pages',

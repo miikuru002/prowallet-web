@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useFormik } from "formik";
 import { Button } from "primereact/button";
@@ -21,10 +20,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { IFactura } from "../../../../types/response";
 import { Stepper } from "primereact/stepper";
 import { StepperPanel } from "primereact/stepperpanel";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { Tag } from "primereact/tag";
-import { calcularPlazoDescuento, getTipoComisionData } from "../../../../utils";
+import { calcularPlazoDescuento } from "../../../../utils";
 import { Message } from "primereact/message";
 
 interface IProps {
@@ -46,6 +42,9 @@ const DescontarFacturaDialog: React.FC<IProps> = (props) => {
     },
   });
 
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
   const formik = useFormik<IDescontarFacturaForm>({
     initialValues: {
       fechaDescuento: null,
@@ -58,10 +57,7 @@ const DescontarFacturaDialog: React.FC<IProps> = (props) => {
       fechaDescuento: Yup.date()
         .nullable()
         .required("La fecha de descuento es requerida")
-        .min(
-          new Date(),
-          "La fecha de descuento debe ser posterior a la fecha actual"
-        ),
+        .min(startOfToday, "La fecha de descuento debe ser igual o posterior a la fecha actual"),
       tasa: Yup.number()
         .required("La tasa es requerida")
         .positive("La tasa debe ser un número positivo")
@@ -351,49 +347,6 @@ const DescontarFacturaDialog: React.FC<IProps> = (props) => {
                     )}
                 </div>
               )}
-              <div className="flex py-4 gap-2">
-                <Button
-                  label="Atrás"
-                  severity="secondary"
-									type="button"
-                  icon="pi pi-arrow-left"
-                  onClick={() => stepperRef.current?.prevCallback()}
-                />
-                <Button
-                  label="Siguiente"
-                  icon="pi pi-arrow-right"
-									type="button"
-                  iconPos="right"
-                  onClick={() => stepperRef.current?.nextCallback()}
-                />
-              </div>
-            </StepperPanel>
-            <StepperPanel header="Comisiones">
-							<p>Las siguientes comisiones serán descontadas de la factura.</p>
-							<DataTable 
-								value={[{
-									nombre: "Gastos administrativos",
-									momento: "DESCUENTO",
-									tipo: "MONTO_FIJO",
-									valor: 1000,
-								}]} 
-								size="small"
-								showGridlines 
-							>
-                <Column field="nombre" header="Nombre" />
-								<Column header="Momento" body={(data) => data.momento} />
-                <Column field="valor" header="Valor" body={(data) => data.valor.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}></Column>
-                <Column 
-									header="Tipo" 
-									body={(data) => 
-										<Tag 
-											//@ts-ignore idk why this is not working
-											severity={getTipoComisionData(data.tipo).color} 
-											value={getTipoComisionData(data.tipo).label} 
-										/>
-									} 
-								/>
-            	</DataTable>
               <div className="flex py-4">
                 <Button 
 									label="Atrás" 

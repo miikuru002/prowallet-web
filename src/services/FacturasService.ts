@@ -22,6 +22,11 @@ const FacturasService = {
     const res = await httpClient.patch<IApiResponse>(`/factura/alta/${facturaId}`);
     return res.data;
   },
+
+  darDeBajaFactura: async (facturaId: number) => {
+    const res = await httpClient.delete<IApiResponse>(`/factura/baja/${facturaId}`);
+    return res.data;
+  }
 };
 
 export default FacturasService;

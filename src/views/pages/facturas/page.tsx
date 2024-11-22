@@ -10,16 +10,17 @@ import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
 import ClientesService from "../../../services/ClientesService";
 import FacturasService from "../../../services/FacturasService";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Dropdown } from "primereact/dropdown";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import RegisterFacturaDialog from "./components/RegisterFacturaDialog";
-import { ICliente, IComision, IFactura } from "../../../types/response";
-import { getFacturaStatusData, getTipoComisionData } from "../../../utils";
+import { ICliente, IFactura } from "../../../types/response";
+import { calcularComisiones, getFacturaStatusData, getTipoComisionData } from "../../../utils";
 import { Tag } from "primereact/tag";
 import FacturaDetails from "./components/FacturaDetails";
 import { EEstadoFactura } from "../../../types/enums";
+import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 
 const TablaFacturas = () => {
   const [isRegistrarFacturaVisible, setIsRegistrarFacturaVisible] =
@@ -46,6 +47,36 @@ const TablaFacturas = () => {
     refetchOnWindowFocus: false,
   });
 
+  //mutations
+  const darDeBajaFactura = useMutation({
+    mutationFn: FacturasService.darDeBajaFactura,
+    onSuccess: () => {
+      toast.current?.show({
+        severity: "success",
+        summary: "Factura dada de baja",
+      });
+      facturasQuery.refetch();
+    },
+    onError: () => {
+      toast.current?.show({
+        severity: "error",
+        summary: "Error al dar de baja la factura",
+      });
+    },
+  });
+
+  const confirmDelete = (data: IFactura) => {
+    confirmDialog({
+      message: `¿Está seguro que desea dar de baja la factura ${data.numero}?`,
+      header: 'Confirmación',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      acceptLabel: "Sí",
+      acceptClassName: "p-button-danger",
+      accept: () => darDeBajaFactura.mutate(data.id)
+    });
+  };
+
   const exportCSV = () => {
     dt.current?.exportCSV();
   };
@@ -67,23 +98,7 @@ const TablaFacturas = () => {
     }
   }, [facturasQuery.data]);
 
-  const calcularComisiones = (comisiones: IComision[], valorNominal: number) => {
-    return comisiones.reduce((resultado, comision) => {
-      const monto = comision.tipo === "MONTO_FIJO"
-        ? comision.valor
-        : (comision.valor / 100) * valorNominal; //se convierte porcentaje en monto
-  
-      if (comision.momento === "DESCUENTO") {
-        resultado.descuento += monto;
-      } else if (comision.momento === "CANCELACION") {
-        resultado.cancelacion += monto;
-      }
-  
-      return resultado;
-    },
-    { descuento: 0, cancelacion: 0 } //valores iniciales
-   );
-  }    
+    
 
   //detalle descuentos
   const rowExpansionTemplate = (rowData: IFactura) => {
@@ -187,6 +202,7 @@ const TablaFacturas = () => {
       <div className="col-12">
         <div className="card">
           <h5>Facturas</h5>
+          <ConfirmDialog />
           <Toast ref={toast} />
           <Toolbar
             className="mb-4"
@@ -312,8 +328,6 @@ const TablaFacturas = () => {
               )}
             />
             <Column
-              headerStyle={{ width: '5rem', textAlign: 'center' }}
-              bodyStyle={{ textAlign: 'center', overflow: 'visible' }}
               body={(rowData: IFactura) => {
                 return (
                   <>
@@ -325,6 +339,13 @@ const TablaFacturas = () => {
                         setSelectedFactura(rowData);
                         setIsVisibleRight(true);
                       }}
+                    />
+                    <Button
+                      icon="pi pi-trash"
+                      rounded
+                      outlined
+                      severity="danger"
+                      onClick={() => confirmDelete(rowData)}
                     />
                   </>
                 );

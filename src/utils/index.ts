@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { EEstadoFactura } from "../types/enums";
-import { IFactura } from "../types/response";
+import { IComision, IFactura } from "../types/response";
 
 export const getFacturaStatusData = (status?: EEstadoFactura) => {
   switch (status) {
@@ -112,3 +112,21 @@ export const calcularPlazoDescuento = (fechaDescuentoValue: Date | null, fechaEm
   const fechaDescuento = DateTime.fromJSDate(fechaDescuentoValue);
   return Math.floor(fechaDescuento.diff(fechaEmisionFactura, "days").days);
 }
+
+export const calcularComisiones = (comisiones: IComision[], valorNominal: number) => {
+  return comisiones.reduce((resultado, comision) => {
+    const monto = comision.tipo === "MONTO_FIJO"
+      ? comision.valor
+      : (comision.valor / 100) * valorNominal; //se convierte porcentaje en monto
+
+    if (comision.momento === "DESCUENTO") {
+      resultado.descuento += monto;
+    } else if (comision.momento === "CANCELACION") {
+      resultado.cancelacion += monto;
+    }
+
+    return resultado;
+  },
+  { descuento: 0, cancelacion: 0 } //valores iniciales
+ );
+}  

@@ -53,7 +53,7 @@ const AppTopbar = forwardRef<AppTopbarRef>((_props, ref) => {
     return (
         <div className="layout-topbar">
             <a href="/" className="layout-topbar-logo">
-                <img src={`/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} alt="logo" />
+                <img src={`/images/logo.png`} alt="logo" />
                 <span>ProWallet</span>
             </a>
 

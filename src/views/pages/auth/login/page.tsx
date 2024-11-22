@@ -1,8 +1,7 @@
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
 import { Password } from "primereact/password";
-import { LayoutContext } from "../../../../layout/context/layoutcontext";
 import { InputText } from "primereact/inputtext";
 import { classNames } from "primereact/utils";
 import { useAuth } from "react-oidc-context";
@@ -12,7 +11,6 @@ const LoginPage = () => {
 	const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 	const [checked, setChecked] = useState(false);
-	const { layoutConfig } = useContext(LayoutContext);
   const toast = useRef<Toast>(null);
 
 	const auth = useAuth();
@@ -34,9 +32,7 @@ const LoginPage = () => {
       <Toast ref={toast} />
 			<div className="flex flex-column align-items-center justify-content-center">
 				<img
-					src={`/images/logo-${
-						layoutConfig.colorScheme === "light" ? "dark" : "white"
-					}.svg`}
+					src={`/images/logo.png  `}
 					alt="ProWallet logo"
 					className="mb-5 w-6rem flex-shrink-0"
 				/>
@@ -101,7 +97,7 @@ const LoginPage = () => {
 								</div>
 							</div>
 							<Button
-								label="Sign In"
+								label="Iniciar Sesión"
 								className="w-full p-3 text-xl"
 								onClick={handleLogin}
 							></Button>

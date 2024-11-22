@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
-import { EEstadoFactura } from "../types/enums";
-import { IComision, IFactura } from "../types/response";
+import { EEstadoFactura, EPeriodo, ETipoTasa } from "../types/enums";
+import { IComision, IDescuentoFactura, IFactura } from "../types/response";
 
 export const getFacturaStatusData = (status?: EEstadoFactura) => {
   switch (status) {
@@ -114,19 +114,88 @@ export const calcularPlazoDescuento = (fechaDescuentoValue: Date | null, fechaEm
 }
 
 export const calcularComisiones = (comisiones: IComision[], valorNominal: number) => {
-  return comisiones.reduce((resultado, comision) => {
-    const monto = comision.tipo === "MONTO_FIJO"
-      ? comision.valor
-      : (comision.valor / 100) * valorNominal; //se convierte porcentaje en monto
+  return comisiones.reduce(
+    (resultado, comision) => {
+      const monto =
+        comision.tipo === "MONTO_FIJO"
+          ? comision.valor
+          : (comision.valor / 100) * valorNominal; //se convierte porcentaje en monto
 
-    if (comision.momento === "DESCUENTO") {
-      resultado.descuento += monto;
-    } else if (comision.momento === "CANCELACION") {
-      resultado.cancelacion += monto;
+      if (comision.momento === "DESCUENTO") {
+        if (comision.tipo === "MONTO_FIJO") {
+          resultado.descuento.fijos += monto;
+        } else {
+          resultado.descuento.porcentajes += monto;
+        }
+      } else if (comision.momento === "CANCELACION") {
+        if (comision.tipo === "MONTO_FIJO") {
+          resultado.cancelacion.fijos += monto;
+        } else {
+          resultado.cancelacion.porcentajes += monto;
+        }
+      }
+
+      return resultado;
+    },
+    {
+      descuento: { fijos: 0, porcentajes: 0 }, //valores iniciales para descuento
+      cancelacion: { fijos: 0, porcentajes: 0 }, //valores iniciales para cancelación
     }
+  );
+}; 
 
-    return resultado;
-  },
-  { descuento: 0, cancelacion: 0 } //valores iniciales
- );
-}  
+export const calcularTasaDescontada = (tasaInteres: number) => {
+  const tasaDecimal = tasaInteres / 100;
+  const tasaDescontada = (tasaDecimal / (1 + tasaDecimal)) * 100;
+  return `${tasaDescontada.toFixed(7)}%`;
+}
+
+export const tasaInteresTexto = (descuento: IDescuentoFactura | null) => {
+  if (!descuento) return "";
+  let tipoTasa = descuento.tipoTasa === ETipoTasa.EFECTIVA ? "T.E." : "T.N.";
+  let periodoCapitalizacion = "";
+
+  switch (descuento.periodoTasa) {
+    case EPeriodo.MENSUAL:
+      tipoTasa = tipoTasa + "M";
+      break;
+    case EPeriodo.BIMESTRAL:
+      tipoTasa = tipoTasa + "B";
+      break;
+    case EPeriodo.TRIMESTRAL:
+      tipoTasa = tipoTasa + "T";
+      break;
+    case EPeriodo.SEMESTRAL:
+      tipoTasa = tipoTasa + "S";
+      break;
+    case EPeriodo.ANUAL:
+      tipoTasa = tipoTasa + "A";
+      break;
+    default:
+      return "";
+  }
+
+  if (descuento.periodoCapitalizacion) {
+    switch (descuento.periodoCapitalizacion) {
+      case EPeriodo.MENSUAL:
+        periodoCapitalizacion = " (capitalizable mensualmente)";
+        break;
+      case EPeriodo.BIMESTRAL:
+        periodoCapitalizacion = " (capitalizable bimestralmente)";
+        break;
+      case EPeriodo.TRIMESTRAL:
+        periodoCapitalizacion = " (capitalizable trimestralmente)";
+        break;
+      case EPeriodo.SEMESTRAL:
+        periodoCapitalizacion = " (capitalizable semestralmente)";
+        break;
+      case EPeriodo.ANUAL:
+        periodoCapitalizacion = " (capitalizable anualmente)";
+        break;
+      default:
+        return "";
+    }
+  }
+
+  return `${tipoTasa}${periodoCapitalizacion}`;
+}

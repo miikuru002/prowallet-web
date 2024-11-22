@@ -1,6 +1,5 @@
 import { lazy } from 'react';
 import { Navigate, type RouteObject } from 'react-router-dom';
-import AppLayout from '../layout/AppLayout';
 import Loadable from '../layout/Loadable';
 import Cartera from "../views/pages/cartera/page.tsx";
 import PrivateRoute from '../layout/PrivateRoute.tsx';

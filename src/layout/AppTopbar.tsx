@@ -38,7 +38,8 @@ const AppTopbar = forwardRef<AppTopbarRef>((_props, ref) => {
       {
         label: 'Mi Perfil',
         icon: 'pi pi-user',
-        command: () => window.location.href = 'https://auth.hannami.xyz/realms/ProWallet/account/'
+        //open new tab
+        command: () => window.open('https://auth.hannami.xyz/realms/ProWallet/account/', '_blank'),
       },
       {
         label: 'Cerrar Sesión',

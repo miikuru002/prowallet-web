@@ -210,7 +210,7 @@ const DescontarFacturaDialog: React.FC<IProps> = (props) => {
                   * El plazo de descuento se calculará a partir de la fecha de emisión de la factura.
                 </small> <br />
                 <small>
-                  * La fecha de descuento debe ser anterior a la fecha de vencimiento de la factura.
+                  * La fecha de descuento se toma en cuenta desde hoy y debe ser anterior a la fecha de vencimiento de la factura.
                 </small>
               </div>
               <div className="flex py-4">

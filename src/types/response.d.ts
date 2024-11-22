@@ -58,6 +58,7 @@ export interface IDescuentoFactura {
   valorNeto: number;
   valorRecibido: number;
   valorEntregado: number;
+  tcea: number;
   fechaCreacion: string;
   fechaModificacion: string;
   comisionesAplicadas: IComision[];

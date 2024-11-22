@@ -104,3 +104,11 @@ export const getFacturaTimeline = (factura?: IFactura) => {
 
   return timeline;
 };
+
+export const calcularPlazoDescuento = (fechaDescuentoValue: Date | null, fechaEmisionValue: string) => {
+  if (!fechaDescuentoValue) return 0;
+  //se resta la fecha de descuento con la fecha de emisión de la factura
+  const fechaEmisionFactura = DateTime.fromISO(fechaEmisionValue);
+  const fechaDescuento = DateTime.fromJSDate(fechaDescuentoValue);
+  return Math.floor(fechaDescuento.diff(fechaEmisionFactura, "days").days);
+}

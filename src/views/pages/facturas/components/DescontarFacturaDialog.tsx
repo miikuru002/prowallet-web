@@ -24,7 +24,7 @@ import { StepperPanel } from "primereact/stepperpanel";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Tag } from "primereact/tag";
-import { getTipoComisionData } from "../../../../utils";
+import { calcularPlazoDescuento, getTipoComisionData } from "../../../../utils";
 import { Message } from "primereact/message";
 
 interface IProps {
@@ -45,14 +45,6 @@ const DescontarFacturaDialog: React.FC<IProps> = (props) => {
       queryClient.invalidateQueries({ queryKey: ["facturas"] });
     },
   });
-
-  const calculatePlazoDescuento = (fechaDescuentoValue: Date | null) => {
-    if (!fechaDescuentoValue) return 0;
-    //se resta la fecha de descuento con la fecha de hoy
-    const fechaHoy = DateTime.now().startOf("day")
-    const fechaDescuento = DateTime.fromJSDate(fechaDescuentoValue);
-    return Math.floor(fechaDescuento.diff(fechaHoy, "days").days);
-  }
 
   const formik = useFormik<IDescontarFacturaForm>({
     initialValues: {
@@ -179,18 +171,21 @@ const DescontarFacturaDialog: React.FC<IProps> = (props) => {
         }
         onHide={() => props.setVisible(false)}
       >
-        <form>
+        <form onSubmit={formik.handleSubmit}>
           <Stepper ref={stepperRef} orientation="vertical">
             <StepperPanel header="Fecha de descuento">
               <div className="field">
-                <label htmlFor="fechaDescuento">Fecha de descuento</label>
+                <label htmlFor="fechaDescuento">Fecha de descuento *</label>
                 <Calendar
                   id="fechaDescuento"
                   name="fechaDescuento"
+								  dateFormat="yy-mm-dd"
                   showIcon
                   showButtonBar
+                  locale="es"
                   required
                   minDate={new Date()}
+                  maxDate={new Date(props.factura?.fechaVencimiento ?? "")}
                   value={formik.values.fechaDescuento}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -207,7 +202,16 @@ const DescontarFacturaDialog: React.FC<IProps> = (props) => {
                         formik.errors.fechaDescuento}
                     </small>
                   )}
-                <Message className="mt-2" text={`El plazo de descuento será de ${calculatePlazoDescuento(formik.values.fechaDescuento)} día(s)`} />
+                <Message
+                  className="mt-2 mb-2"
+                  text={`El plazo de descuento será de ${calcularPlazoDescuento(formik.values.fechaDescuento, props.factura?.fechaEmision ?? "")} días`} 
+                />
+                <small>
+                  * El plazo de descuento se calculará a partir de la fecha de emisión de la factura.
+                </small> <br />
+                <small>
+                  * La fecha de descuento debe ser anterior a la fecha de vencimiento de la factura.
+                </small>
               </div>
               <div className="flex py-4">
                 <Button

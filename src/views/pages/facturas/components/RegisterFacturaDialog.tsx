@@ -71,7 +71,7 @@ const RegisterFacturaDialog: React.FC<IProps> = (props) => {
 			valorNominal: Yup.number()
 				.required("El valor n. es requerido")
 				.positive("El valor n. debe ser un número positivo")
-				.min(1, "El valor n. debe ser al menos 1")
+				.min(1000, "El valor n. debe ser al menos 1,000")
 				.max(1000000, "El valor n. no puede exceder los 1,000,000"),
       clienteId: Yup.number()
         .required("El cliente es requerido")
@@ -204,8 +204,10 @@ const RegisterFacturaDialog: React.FC<IProps> = (props) => {
 							<Calendar
 								id="fechaEmision"
 								name="fechaEmision"
+								dateFormat="yy-mm-dd"
 								showIcon
 								showButtonBar
+								locale="es"
 								required
 								maxDate={new Date()}
 								value={formik.values.fechaEmision}
@@ -226,8 +228,10 @@ const RegisterFacturaDialog: React.FC<IProps> = (props) => {
 							<Calendar
 								id="fechaVencimiento"
 								name="fechaVencimiento"
+								dateFormat="yy-mm-dd"
 								showIcon
 								showButtonBar
+								locale="es"
 								required
 								minDate={formik.values.fechaEmision || new Date()}
 								value={formik.values.fechaVencimiento}

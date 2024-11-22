@@ -15,7 +15,7 @@ import { Dropdown } from "primereact/dropdown";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import RegisterFacturaDialog from "./components/RegisterFacturaDialog";
-import { ICliente, IFactura } from "../../../types/response";
+import { ICliente, IComision, IFactura } from "../../../types/response";
 import { getFacturaStatusData, getTipoComisionData } from "../../../utils";
 import { Tag } from "primereact/tag";
 import FacturaDetails from "./components/FacturaDetails";
@@ -67,6 +67,24 @@ const TablaFacturas = () => {
     }
   }, [facturasQuery.data]);
 
+  const calcularComisiones = (comisiones: IComision[], valorNominal: number) => {
+    return comisiones.reduce((resultado, comision) => {
+      const monto = comision.tipo === "MONTO_FIJO"
+        ? comision.valor
+        : (comision.valor / 100) * valorNominal; //se convierte porcentaje en monto
+  
+      if (comision.momento === "DESCUENTO") {
+        resultado.descuento += monto;
+      } else if (comision.momento === "CANCELACION") {
+        resultado.cancelacion += monto;
+      }
+  
+      return resultado;
+    },
+    { descuento: 0, cancelacion: 0 } //valores iniciales
+   );
+  }    
+
   //detalle descuentos
   const rowExpansionTemplate = (rowData: IFactura) => {
     return (
@@ -95,6 +113,13 @@ const TablaFacturas = () => {
                 <i className="pi pi-angle-double-left mr-2"></i>
                 Valor entregado (con comisiones al momento de cancelar): <code>{rowData.descuento?.valorEntregado.toFixed(2)}</code>
               </p>
+
+              <h6>Tasa de Costo Efectiva Anual (TCEA)</h6>
+              <div className="text-center text-xl">
+                <p>
+                  <code><b>{rowData.descuento?.tcea.toFixed(7)}%</b></code>
+                </p>
+              </div>
             </div>
           </div>
 
@@ -104,6 +129,22 @@ const TablaFacturas = () => {
               <DataTable
                 value={rowData.descuento?.comisionesAplicadas}
                 size="small"
+                footer={
+                  <>
+                    <p className="m-0">
+                      Total comisiones (descuento):{" "}
+                      <code>
+                        {calcularComisiones(rowData.descuento?.comisionesAplicadas ?? [], rowData.valorNominal).descuento.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                      </code>
+                    </p>
+                    <p className="m-0">
+                      Total comisiones (cacelación):{" "}
+                      <code>
+                        {calcularComisiones(rowData.descuento?.comisionesAplicadas ?? [], rowData.valorNominal).cancelacion.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) }
+                      </code>
+                    </p>
+                  </>
+                }
                 removableSort
                 showGridlines
               >
@@ -134,7 +175,6 @@ const TablaFacturas = () => {
 									} 
 								/>
               </DataTable>
-              {/* TODO: PONER EL TOTAL DE LAS COMISIONES */}
             </div>
           </div>
         </div>

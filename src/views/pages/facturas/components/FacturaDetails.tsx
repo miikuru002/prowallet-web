@@ -8,6 +8,7 @@ import { getFacturaStatusData, getFacturaTimeline } from "../../../../utils";
 import DescontarFacturaDialog from "./DescontarFacturaDialog";
 import { EEstadoFactura } from "../../../../types/enums";
 import { Tag } from "primereact/tag";
+import DarDeAltaFacturaDialog from "./DarDeAltaFacturaDialog";
 
 interface IProps {
   isVisibleRight: boolean;
@@ -21,6 +22,7 @@ const FacturaDetails: React.FC<IProps> = ({
   factura,
 }) => {
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialog2Visible, setDialog2Visible] = useState(false);
 
   return (
     <>
@@ -100,17 +102,21 @@ const FacturaDetails: React.FC<IProps> = ({
         </div>
 
         <div className="text-center">
-          <Button
-            label={
-              factura?.estado === EEstadoFactura.PENDIENTE
-                ? "Descontar"
-                : "Descontado"
-            }
-            icon="pi pi-dollar"
-            severity="success"
-            disabled={factura?.estado !== EEstadoFactura.PENDIENTE}
-            onClick={() => setDialogVisible(true)}
-          />
+          {factura?.estado === EEstadoFactura.PENDIENTE && (
+            <Button
+              label="Descontar"
+              icon="pi pi-dollar"
+              severity="success"
+              onClick={() => setDialogVisible(true)}
+            />
+          )}
+          {factura?.estado === EEstadoFactura.DESCONTADA && (
+            <Button
+              label="Dar de alta"
+              icon="pi pi-check"
+              onClick={() => setDialog2Visible(true)}
+            />
+            )}
         </div>
       </Sidebar>
 
@@ -119,6 +125,13 @@ const FacturaDetails: React.FC<IProps> = ({
         isVisible={dialogVisible}
         setVisible={setDialogVisible}
         factura={factura}
+      />
+
+      {/* DIALOG DAR DE ALTA FACTURA */}
+      <DarDeAltaFacturaDialog 
+        isVisible={dialog2Visible} 
+        setVisible={setDialog2Visible} 
+        factura={factura} 
       />
     </>
   );

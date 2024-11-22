@@ -1,40 +1,36 @@
 import { lazy } from 'react';
 import { Navigate, type RouteObject } from 'react-router-dom';
-import AppLayout from '../layout/AppLayout';
 import Loadable from '../layout/Loadable';
+import Cartera from "../views/pages/cartera/page.tsx";
+import PrivateRoute from '../layout/PrivateRoute.tsx';
+import PublicRoute from '../layout/PublicRoute.tsx';
 
 //private routes
 const Dashboard = Loadable(lazy(() => import('../views/home')));
-const FormLayout = Loadable(lazy(() => import('../views/uikit/formlayout/page')));
-const Input = Loadable(lazy(() => import('../views/uikit/input/page')));
-const List = Loadable(lazy(() => import('../views/uikit/list/page')));
-const Message = Loadable(lazy(() => import('../views/uikit/message/page')));
-const Misc = Loadable(lazy(() => import('../views/uikit/misc/page')));
-const Overlay = Loadable(lazy(() => import('../views/uikit/overlay/page')));
-const Panel = Loadable(lazy(() => import('../views/uikit/panel/page')));
-const Table = Loadable(lazy(() => import('../views/uikit/table/page')));
+const TablaFacturas = Loadable(lazy(() => import('../views/pages/facturas/page')));
+const EmptyPage = Loadable(lazy(() => import('../views/pages/empty/page')));
 
 //public routes
-
+const LoginPage = Loadable(lazy(() => import('../views/pages/auth/login/page')));
 
 //404
 const ErrorPage = Loadable(lazy(() => import('../views/pages/notfound/page')));
 
 const MainRoutes : RouteObject[] =  [
   //*PUBLIC ROUTES
-  // {
-  //   element: <PublicRoute />,
-  //   children: [
-  //     {
-  //       path: '/login',
-  //       element: <Login />,
-  //     },
-  //   ],
-  // },
+  {
+    element: <PublicRoute />,
+    children: [
+      {
+        path: '/login',
+        element: <LoginPage />,
+      },
+    ],
+  },
 
   //*PRIVATE ROUTES
   {
-    element: <AppLayout />,
+    element: <PrivateRoute />,
     children: [
       {
         index: true,
@@ -45,42 +41,22 @@ const MainRoutes : RouteObject[] =  [
         element: <Dashboard />,
       },
       {
-        path: '/uikit',
+        path: '/carteras',
+        element: <Cartera/>,
+      },
+      {
+        path: 'facturas',
+        element: <TablaFacturas />,
+      },
+      {
+        path: '/pages',
         children: [
           {
-            path: 'formlayout',
-            element: <FormLayout />,
+            path: 'empty',
+            element: <EmptyPage />,
           },
-          {
-            path: 'input',
-            element: <Input />,
-          },
-          {
-            path: 'list',
-            element: <List />,
-          },
-          {
-            path: 'message',
-            element: <Message />,
-          },
-          {
-            path: 'misc',
-            element: <Misc />,
-          },
-          {
-            path: 'overlay',
-            element: <Overlay />,
-          },
-          {
-            path: 'panel',
-            element: <Panel />,
-          },
-          {
-            path: 'table',
-            element: <Table />,
-          },
-        ],
-      },
+        ]
+      }
     ],
   },
 

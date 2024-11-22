@@ -3,13 +3,17 @@ import { forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import { AppTopbarRef, LayoutConfig } from '../types';
 import { LayoutContext } from './context/layoutcontext';
 import { PrimeReactContext } from 'primereact/api';
+import { Menu } from 'primereact/menu';
+import { useAuth } from 'react-oidc-context';
 
 const AppTopbar = forwardRef<AppTopbarRef>((_props, ref) => {
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar, setLayoutConfig } = useContext(LayoutContext);
     const menubuttonRef = useRef(null);
     const topbarmenuRef = useRef(null);
     const topbarmenubuttonRef = useRef(null);
+    const menu = useRef<Menu>(null);
     const { changeTheme } = useContext(PrimeReactContext);
+    const auth = useAuth();
 
     useImperativeHandle(ref, () => ({
         menubutton: menubuttonRef.current,
@@ -30,10 +34,26 @@ const AppTopbar = forwardRef<AppTopbarRef>((_props, ref) => {
         });
     };
 
+    const items = [
+      {
+        label: 'Mi Perfil',
+        icon: 'pi pi-user',
+        //open new tab
+        command: () => window.open('https://auth.hannami.xyz/realms/ProWallet/account/', '_blank'),
+      },
+      {
+        label: 'Cerrar Sesión',
+        icon: 'pi pi-sign-out',
+        command: () => auth.signoutRedirect(),
+      }
+    ];
+
+
+
     return (
         <div className="layout-topbar">
             <a href="/" className="layout-topbar-logo">
-                <img src={`/images/logo-${layoutConfig.colorScheme !== 'light' ? 'white' : 'dark'}.svg`} width="47.22px" height={'35px'} alt="logo" />
+                <img src={`/images/logo.png`} alt="logo" />
                 <span>ProWallet</span>
             </a>
 
@@ -50,10 +70,12 @@ const AppTopbar = forwardRef<AppTopbarRef>((_props, ref) => {
                     <i className="pi pi-moon"></i>
                     <span>Dark Mode</span>
                 </button>
-                <button type="button" className="p-link layout-topbar-button">
+                <button type="button" className="p-link layout-topbar-button" onClick={(event) => menu.current?.toggle(event)}>
                     <i className="pi pi-user"></i>
                     <span>Profile</span>
                 </button>
+
+                <Menu model={items} popup ref={menu} id="popup_menu_right" popupAlignment="right" />
             </div>
         </div>
     );
